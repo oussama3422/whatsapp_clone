@@ -1,8 +1,9 @@
 
-# Whatsapp UI
+# Whatsapp UI Clone
 
 A completely Responsive Whatsapp UI App- works on Android, iOS, Web & Desktop! Works as WhatsApp App on Smaller Screen Sizes and WhatsApp Web on Bigger Screen Sizes!
 
 
-Demo:
+LinkedIn:
+
 linkedin.com/in/oussama-ghayghay-608907207/
