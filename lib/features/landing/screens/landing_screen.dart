@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:whatsapp_ui/core/custom_button.dart';
 import 'package:whatsapp_ui/features/auth/screens/login_screen.dart';
-
 import '../../../colors.dart';
 
 class LandingScreen extends StatelessWidget {

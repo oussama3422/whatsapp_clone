@@ -18,7 +18,8 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   firebase_storage:
-
+  country_picker:
+  flutter_riverpod:
 
 dev_dependencies:
   flutter_test:
