@@ -20,6 +20,7 @@ dependencies:
   firebase_storage:
   country_picker:
   flutter_riverpod:
+  image_picker:
 
 dev_dependencies:
   flutter_test:
