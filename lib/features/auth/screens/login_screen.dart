@@ -1,19 +1,22 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/core/utils/utils.dart';
+import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 
 import '../../../core/custom_button.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   //create routeName 
   static const nameRoute='/login-screen';
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   Country? country;
   TextEditingController controllerNumber=TextEditingController();
 
@@ -27,6 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     });
   }
+
+ void signInPhoneNumber(){
+  String phoneNumber= controllerNumber.text.trim();
+  if(phoneNumber.isNotEmpty && country!=null){
+   ref.read(authControllerProvider).signInWithPhone(context,'+${country!.phoneCode}$phoneNumber');
+  }else{
+    showSnackBar(context: context, content: 'don\'t leave any field empty');
+  }
+ }
+
   @override
   Widget build(BuildContext context) {
     final size=MediaQuery.of(context).size;
@@ -65,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height:size.height * 0.6),
               SizedBox(
                 width:90,
-                child:CustomButton(text: 'NEXT', onPressed: (){})
+                child:CustomButton(text: 'NEXT', onPressed:signInPhoneNumber),
                 )
             ],
             ),
