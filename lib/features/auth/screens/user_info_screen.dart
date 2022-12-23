@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
@@ -66,20 +65,24 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                      Container(
-                          width: size.width * 8.5,
-                          padding:const EdgeInsets.all(8),
-                          child:TextField(
-                            controller: nameController,
-                            decoration:const InputDecoration(
-                              hintText: 'Enter your name',
+                      Expanded(
+                        child: Container(
+                            width: size.width * 8.5,
+                            padding:const EdgeInsets.all(8),
+                            child:TextField(
+                              controller: nameController,
+                              decoration:const InputDecoration(
+                                hintText: 'Enter your name',
+                              ),
                             ),
-                          ),
+                        ),
                       ),
-                     IconButton(
-                      onPressed: storeUserData,
-                      icon: const Icon(Icons.done)
-                      ),
+                     Expanded(
+                       child: IconButton(
+                        onPressed: storeUserData,
+                        icon: const Icon(Icons.done)
+                        ),
+                     ),
                 ],
                 ),
             ],

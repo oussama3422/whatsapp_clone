@@ -13,7 +13,7 @@ import 'package:whatsapp_ui/modules/user_model.dart';
 import 'package:whatsapp_ui/screens/mobile_layout_screen.dart';
 
 final authrepositryProvider = Provider((ref) {
-  return AuthRepository(auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance); ;
+  return AuthRepository(auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance); 
 });
 
 
@@ -23,6 +23,16 @@ class AuthRepository{
 
   AuthRepository({required this.auth,required this.firestore});
 
+  // get User Data from firebase
+  Future<UserModel?> getUserData()async{
+   final userdata= await firestore.collection('users').doc(auth.currentUser?.uid).get();
+    UserModel? user;
+    if(userdata.data()!=null){
+        user=UserModel.fromMap(userdata.data()!);
+    }
+    return user;
+  }
+  
 
   void singInWithPhone(BuildContext context,String phoneNumber)async{
     try{
