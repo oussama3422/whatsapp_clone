@@ -11,7 +11,7 @@ class SelectContactScreen extends ConsumerWidget {
 
   
  void selectContact(WidgetRef ref,Contact selectedContact,BuildContext context){
-  
+    ref.watch(selectContactControllerProvider).selectContact(selectedContact, context);
  }
 
   @override
@@ -36,7 +36,7 @@ class SelectContactScreen extends ConsumerWidget {
           itemBuilder: (context, index) {
             final contact=contactList[index];
             return InkWell(
-              onTap: (){},
+              onTap: ()=>selectContact(ref,contact,context),
               child: Padding(
                 padding: const EdgeInsets.only(bottom:8.0),
                 child: ListTile(

@@ -32,7 +32,7 @@ class SelectContactRepository{
         var userCollection=await firestore.collection('users').get();
         bool isFound=false;
         for(var document in userCollection.docs){
-          var userData=UserModel.fromJson(document.data() as String);
+          var userData=UserModel.fromMap(document.data());
           print(selectedContact.phones[0].number);
         }
     }catch(error){
