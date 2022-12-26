@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 
+import '../../../colors.dart';
 import '../../../core/utils/utils.dart';
 
 class UserInfoScreen extends ConsumerStatefulWidget {
@@ -54,35 +55,31 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   ),
                   Positioned(
                     bottom: -10,
-                    left:80,
+                    left:90,
                     child: IconButton(
                       onPressed: ()=>pickImage(),
-                      icon:const Icon(Icons.add_a_photo)
+                      icon:const Icon(Icons.add_a_photo,color:Colors.blueGrey,size:30)
                       ),
                   ),
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                      Expanded(
-                        child: Container(
-                            width: size.width * 8.5,
-                            padding:const EdgeInsets.all(8),
-                            child:TextField(
-                              controller: nameController,
-                              decoration:const InputDecoration(
-                                hintText: 'Enter your name',
-                              ),
+                      Container(
+                          width: 300,
+                          padding:const EdgeInsets.all(8),
+                          child:TextField(
+                            controller: nameController,
+                            decoration:const InputDecoration(
+                              hintText: 'Enter your name',
                             ),
-                        ),
+                          ),
                       ),
-                     Expanded(
-                       child: IconButton(
-                        onPressed: storeUserData,
-                        icon: const Icon(Icons.done)
-                        ),
-                     ),
+                     IconButton(
+                      onPressed: storeUserData,
+                      icon: const Icon(Icons.done)
+                      ),
                 ],
                 ),
             ],

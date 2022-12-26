@@ -49,39 +49,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         centerTitle: true,
         backgroundColor: backgroundColor,
         ),
-        body:Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            children: [
-              const Text('Whatssap will need to verify your phone number'),
-              TextButton(
-                onPressed: pickCountry,
-                child:const Text('Pick Country')
-                ),
-              const SizedBox(width: 5),
-              Row(
-                children: [
-                  if(country!=null)
-                    Text('+${country!.countryCode}'),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width:size.width*0.7,
-                    child:TextField(
-                      controller:controllerNumber ,
-                      decoration:const InputDecoration(
-                        hintText: 'phone nunber'
+        body:SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              children: [
+                const Text('Whatssap will need to verify your phone number'),
+                TextButton(
+                  onPressed: pickCountry,
+                  child:const Text('Pick Country')
+                  ),
+                const SizedBox(width: 5),
+                Row(
+                  children: [
+                    if(country!=null)
+                      Text('+${country!.countryCode}'),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width:size.width*0.7,
+                      child:TextField(
+                        controller:controllerNumber ,
+                        decoration:const InputDecoration(
+                          hintText: 'phone nunber'
+                        )
                       )
-                    )
-                    )
-                ],
+                      )
+                  ],
+                ),
+                SizedBox(height:size.height * 0.6),
+                SizedBox(
+                  width:90,
+                  child:CustomButton(text: 'NEXT', onPressed:signInPhoneNumber),
+                  )
+              ],
               ),
-              SizedBox(height:size.height * 0.6),
-              SizedBox(
-                width:90,
-                child:CustomButton(text: 'NEXT', onPressed:signInPhoneNumber),
-                )
-            ],
-            ),
+          ),
         )
     );
   }
