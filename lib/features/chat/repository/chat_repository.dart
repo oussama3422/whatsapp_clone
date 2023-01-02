@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_ui/core/enums/message_enum.dart';
+import 'package:whatsapp_ui/core/repository/common_firebase_storage_repositroy.dart';
 import 'package:whatsapp_ui/core/utils/utils.dart';
 import 'package:whatsapp_ui/modules/chat_contact.dart';
 import 'package:whatsapp_ui/modules/message.dart';
@@ -21,9 +24,11 @@ class ChatRepository{
   ChatRepository({required this.firestore,required this.auth});
 
 
+// create users geter 
+   get _users => firestore.collection('users');
 /// get messages as stream of Querysnapshot
   Stream<List<Message>> getChatStream(String receiverUserId){
-    return firestore.collection('users').doc(auth.currentUser!.uid).collection('chats').doc(receiverUserId).collection('messages').snapshots().map((event){
+    return firestore.collection('users').doc(auth.currentUser!.uid).collection('chats').doc(receiverUserId).collection('messages').orderBy('timeSent').snapshots().map((event){
       List<Message> messages=[];
       for(var docuemnt in event.docs){
         messages.add(Message.fromMap(docuemnt.data()));
@@ -33,13 +38,13 @@ class ChatRepository{
   }
 /// get chat contact as a Stream
    Stream<List<ChatContact>> getChatContacts(){
-      return firestore.collection('users').doc(auth.currentUser!.uid).collection('chats').snapshots().asyncMap(
+      return _users.doc(auth.currentUser!.uid).collection('chats').snapshots().asyncMap(
         (event)async{
        List<ChatContact> contacts=[];
 
        for(var document in event.docs){
         var chatContact=ChatContact.fromMap(document.data());
-        var userData=await firestore.collection('users').doc(chatContact.contactId).get();
+        var userData=await _users.doc(chatContact.contactId).get();
         var user=UserModel.fromMap(userData.data()!);
         contacts.add(ChatContact(
           name: user.name,
@@ -73,7 +78,7 @@ class ChatRepository{
          );
 
     // users -> sender user id -> receiver id -> messages ->message id -> set messgae
-    await firestore.collection('users')
+    await _users
     .doc(auth.currentUser!.uid)
     .collection('chats')
     .doc(recieverUserId)
@@ -81,7 +86,7 @@ class ChatRepository{
     .doc(messageId)
     .set(message.toMap());
     // users ->  receiver id -> sender  id  -> messages ->message id -> set messgae
-    await  firestore.collection('users')
+    await  _users
     .doc(recieverUserId)
     .collection('chats')
     .doc(auth.currentUser!.uid)
@@ -106,7 +111,7 @@ class ChatRepository{
         timeSent: timeSent,
         lastMessage: text
         );
-    await firestore.collection('users').doc(recieverUserId).collection('chats').doc(auth.currentUser!.uid).set(receiveChatContact.toMap());
+    await _users.doc(recieverUserId).collection('chats').doc(auth.currentUser!.uid).set(receiveChatContact.toMap());
     // users -> curreent user id  -> chats -> receiver user id -> set data
       var senderChatContact=ChatContact(
         name: recieverUserData.name,
@@ -115,7 +120,7 @@ class ChatRepository{
         timeSent: timeSent,
         lastMessage: text
         );
-    await firestore.collection('users').doc(auth.currentUser!.uid).collection('chats').doc(recieverUserId).set(receiveChatContact.toMap());
+    await _users.doc(auth.currentUser!.uid).collection('chats').doc(recieverUserId).set(receiveChatContact.toMap());
       
 
  }
@@ -129,7 +134,7 @@ class ChatRepository{
       try{
         var timeSent=DateTime.now();
         UserModel receiverData;
-        var userDataMap=await firestore.collection('users').doc(receiverUserId).get();
+        var userDataMap=await _users.doc(receiverUserId).get();
         
         receiverData=UserModel.fromMap(userDataMap.data()!);
         //users -> receiver user id => chats -> curreent user id -> set data
@@ -155,4 +160,61 @@ class ChatRepository{
         showSnackBar(context: context, content: error.toString());
       }
   }
+
+  // send File Message
+   void sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required String receiverUserId,
+    required UserModel senderUserData,
+    required MessageEnum messageEnum,
+    required ProviderRef ref,
+    })async{
+      try{
+        var timeSent=DateTime.now();
+        var messageId=const Uuid().v1();
+        String imageUrl=await ref.read(commonFirebaseStorageRepositoryProvider).storeFileToFirebase('chat/${messageEnum.type}/${senderUserData.uid}/$receiverUserId/$messageId', file);
+        UserModel reciverUserData;
+        var userDataMap=await _users.doc(receiverUserId).get();
+        reciverUserData=UserModel.fromMap(userDataMap.data()!);
+        String contactMessage;
+        switch (messageEnum) {
+          case MessageEnum.image:
+            contactMessage='📷 Photo';
+            break;
+          case MessageEnum.video:
+            contactMessage='📸 Video';
+            break;
+          case MessageEnum.audio:
+            contactMessage='🎵 Audio';
+            break;
+          case MessageEnum.gif:
+            contactMessage='GIF';
+            break;
+          default:
+            contactMessage='GIF';
+        }
+          // save Data to contact sub collections
+        _saveDataToContactSubCollection(
+          senderUserData,
+          reciverUserData,
+          contactMessage,
+          timeSent,
+          receiverUserId
+          );
+           // save message to message subcollections
+          _saveMessageToMessageSubCollections(
+            recieverUserId: receiverUserId,
+             text: imageUrl,
+             timeSent: timeSent,
+             messageId: messageId,
+             username: senderUserData.name,
+             recieverUsername: reciverUserData.name,
+             messageType: messageEnum
+             );
+             print('it  all is ok check somthing else :::::');
+      }catch(error){
+            showSnackBar(context: context, content: error.toString());
+      }
+    }
 }

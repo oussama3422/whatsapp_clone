@@ -24,6 +24,10 @@ dependencies:
   flutter_contacts: ^1.1.5+1
   uuid:
   intl: ^0.18.0
+  cached_network_image: ^3.2.3
+  video_player: ^2.4.10
+  emoji_picker_flutter: ^1.5.1
+  # cached_video_player: ^1.0.3
 
 dev_dependencies:
   flutter_test:
