@@ -35,7 +35,7 @@ Future<File?> pickVideoFromGallery(BuildContext context)async{
 }
 
 // pick Image 
-pickGIF(BuildContext context){
+pickGIF<>(BuildContext context){
   try{
 
 
